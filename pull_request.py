@@ -50,7 +50,7 @@ class PullRequest():
         output, err = cmd.communicate()
         status = cmd.returncode
         self.update_submodules()
-        logger.log("{0} is at revision {1}".format(self.branch, self.local_sha()))i
+        logger.log("{0} is at revision {1}".format(self.branch, self.local_sha()))
         return status
 
     def reset_hard(self):
