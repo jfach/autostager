@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import github3
 import logger
@@ -16,7 +17,9 @@ class Autostager():
         return os.environ['access_token']
 
     def alphafy(self, a_string):
-        pass
+        pattern = "[^a-z0-9_]"
+        return re.sub(pattern, "_", a_string, flags=re.IGNORECASE)
+
 
     def stage_upstream(self):
         default_branch = client.repository(self.owner, self.repo).default_branch
