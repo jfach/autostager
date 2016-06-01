@@ -46,7 +46,12 @@ class Autostager():
 
     def process_pull(self, pr):
         logger.log("===> {0} {1}".format(pr.number, self.staging_dir(pr)))
-
+        p = pull_request.PullRequest(
+            pr.head.ref,
+            self.authenticated_url(pr.head.repo.clone_url), #wont work
+            self.base_dir(),
+            self.clone_dir(pr),
+            self.authenticated_url(pr.base. 
 
     def comment_or_close(self, p, pr, add_comment = True):
         pass
