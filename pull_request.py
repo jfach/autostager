@@ -44,7 +44,6 @@ class PullRequest():
 
     def rebase(self): #???
         logger.log("rebase origin/{0}".format(self.branch))
-        # log 'rebase origin/#{@branch}'
         os.chdir(self.staging_dir)
         args = ["git", "rebase", "origin/{0}".format(self.branch), "&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -107,7 +106,7 @@ class PullRequest():
         pass
 
     def clone(self):
-        # log something
+        logger.log("clone to {0}".format(self.staging_dir))
         if not os.path.exists(self.base_dir):
             os.path.makedirs(self.base_dir)
         args = ["git", "clone", "-b", self.base_dir, self.clone_url, self.staging_dir, "&>", "/dev/null"]
