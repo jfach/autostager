@@ -49,15 +49,15 @@ class Autostager():
         pass
 
 
-    def authenticated_url(s):
+    def authenticated_url(self, s):
         pass
 
 
-    def base_dir():
+    def base_dir(self):
         return os.environ.get('base_dir') or '/opt/puppet/environments'
 
 
-    def clone_dir(pr):
+    def clone_dir(self, pr):
         alphafy(pr.head.label)
 
 
@@ -65,15 +65,15 @@ class Autostager():
         os.path.join(self.base_dir(), self.clone_dir(pr))
 
 
-    def repo_slug():
+    def repo_slug(self):
         return os.environ.get('repo_slug') # handle None return value if key does not exist?
 
 
-    def client():
+    def client(self):
         return github3.login(token=access_token())
 
 
-    def timeout_seconds():
+    def timeout_seconds(self):
         result = 120
         if os.environ.get('timeout'):
             result = int(os.environ['timeout'])
@@ -81,7 +81,7 @@ class Autostager():
         return result
 
 
-    def safe_dirs():
+    def safe_dirs(self):
         return ['.', '..', 'production']
 
     def run(self):
