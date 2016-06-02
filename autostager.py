@@ -1,6 +1,7 @@
 import os
 import re
 import shutil
+import socket
 import github3
 import logger
 import pull_request
@@ -46,10 +47,40 @@ class Autostager():
 
     def process_pull(self, pr):
         logger.log("===> {0} {1}".format(pr.number, self.staging_dir(pr)))
-
+        p = pull_request.PullRequest(
+            pr.head.ref,
+            self.authenticated_url(pr.as_dict()['head']['repo']['clone_url']),
+            self.base_dir(),
+            self.clone_dir(pr),
+            self.authenticated_url(pr.as_dict()['base']['repo']['clone_url']))
+        if p.staged():
+            p.fetch()
+            if pr.head.sha != p.local_sha():
+                p.reset_hard()
+                add_comment = true
+            else:
+                logger.log("nothing to do on {0} {1}".format(pr.number, self.staging_dir(pr)))
+                add_comment = false
+            self.comment_or_close(p, pr, add_comment)
+        else:
+            p.clone()
+            self.comment_or_close(p, pr)
 
     def comment_or_close(self, p, pr, add_comment = True):
-        pass
+        default_branch = pr.as_dict()['base']['repo']['default_branch']
+        if p.up2date("upstream/{0}".format(default_branch)):
+            if add_comment:
+                comment = ":bell: Staged {0} at revision {1} on {2}"
+                comment = comment.format(self.clone_dir(pr), p.local_sha(), socket.gethostname())
+                pr.create_comment(comment)
+                logger.log(comment)
+            else:
+                comment = ":boom: Unstaged since {0} is dangerously behind upstream"
+                comment = comment.format(self.clone_dir(pr))
+                shutil.rmtree(self.staging_dir(pr))
+                pr.create_comment(comment)
+                pr.close()
+                logger.log(comment) 
 
 
     def authenticated_url(self, s):
