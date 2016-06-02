@@ -48,10 +48,22 @@ class Autostager():
         logger.log("===> {0} {1}".format(pr.number, self.staging_dir(pr)))
         p = pull_request.PullRequest(
             pr.head.ref,
-            self.authenticated_url(pr.head.repo.clone_url), #wont work
+            self.authenticated_url(pr.as_dict()['head']['repo']['clone_url']),
             self.base_dir(),
             self.clone_dir(pr),
-            self.authenticated_url(pr.base. 
+            self.authenticated_url(pr.as_dict()['base']['repo']['clone_url']))
+        if p.staged():
+            p.fetch()
+            if pr.head.sha != p.local_sha():
+                p.reset_hard()
+                add_comment = true
+            else:
+                logger.log("nothing to do on {0} {1}".format(pr.number, self.staging_dir(pr)))
+                add_comment = false
+            self.comment_or_close(p, pr, add_comment)
+        else:
+            p.clone()
+            self.comment_or_close(p, pr)
 
     def comment_or_close(self, p, pr, add_comment = True):
         pass
