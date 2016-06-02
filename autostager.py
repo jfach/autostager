@@ -1,6 +1,7 @@
 import os
 import re
 import shutil
+import socket
 import github3
 import logger
 import pull_request
@@ -66,7 +67,20 @@ class Autostager():
             self.comment_or_close(p, pr)
 
     def comment_or_close(self, p, pr, add_comment = True):
-        pass
+        default_branch = pr.as_dict()['base']['repo']['default_branch']
+        if p.up2date("upstream/{0}".format(default_branch)):
+            if add_comment:
+                comment = ":bell: Staged {0} at revision {1} on {2}"
+                comment = comment.format(self.clone_dir(pr), p.local_sha(), socket.gethostname())
+                pr.create_comment(comment)
+                logger.log(comment)
+            else:
+                comment = ":boom: Unstaged since {0} is dangerously behind upstream"
+                comment = comment.format(self.clone_dir(pr))
+                shutil.rmtree(self.staging_dir(pr))
+                pr.create_comment(comment)
+                pr.close()
+                logger.log(comment) 
 
 
     def authenticated_url(self, s):
