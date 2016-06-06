@@ -1,6 +1,7 @@
 import os
 from subprocess import Popen, PIPE
 import logger
+import utils
 
 class PullRequest():
 
@@ -108,7 +109,7 @@ class PullRequest():
     def clone(self):
         logger.log("clone to {0}".format(self.staging_dir))
         if not os.path.exists(self.base_dir):
-            os.path.makedirs(self.base_dir)
+            utils.mkdir_p(self.base_dir)
         args = ["git", "clone", "-b", self.base_dir, self.clone_url, self.staging_dir, "&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()

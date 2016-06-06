@@ -5,6 +5,7 @@ import socket
 import github3
 import logger
 import pull_request
+from timeout import timeout
 
 class Autostager():
 
@@ -12,7 +13,7 @@ class Autostager():
         slug = self.repo_slug().split('/')
         self.owner = slug[0]
         self.repo = slug[1]
-        self.access_token = os.environ.get('access_token')
+        #self.access_token = os.environ.get('access_token')
 
     def access_token(self):
         return os.environ['access_token']
@@ -23,7 +24,7 @@ class Autostager():
 
 
     def stage_upstream(self):
-        default_branch = client.repository(self.owner, self.repo).default_branch
+        default_branch = self.client().repository(self.owner, self.repo).default_branch
         logger.log("===> begin {0}".format(default_branch))
         p = pull_request.PullRequest(
             default_branch,
@@ -92,7 +93,7 @@ class Autostager():
 
 
     def clone_dir(self, pr):
-        alphafy(pr.head.label)
+        return self.alphafy(pr.head.label)
 
 
     def staging_dir(self, pr):
@@ -104,7 +105,7 @@ class Autostager():
 
 
     def client(self):
-        return github3.login(token=access_token())
+        return github3.login(token=self.access_token())
 
 
     def timeout_seconds(self):
@@ -121,7 +122,7 @@ class Autostager():
     def run(self):
         self.client()
         self.stage_upstream()
-        prs = client.repository(self.owner, self.repo).pull_requests()
+        prs = self.client().repository(self.owner, self.repo).pull_requests()
         new_clones = [self.clone_dir(pr) for pr in prs]
         if os.path.exists(self.base_dir()):
             discard_dirs = set(os.listdir(self.base_dir())) - set(self.safe_dirs()) - set(new_clones)
