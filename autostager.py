@@ -83,8 +83,8 @@ class Autostager():
                 logger.log(comment) 
 
 
-    def authenticated_url(self, s):
-        pass
+    def authenticated_url(self, url):
+        return re.sub(r"(^https://)", "https://" + self.access_token() + "@", url)
 
 
     def base_dir(self):
