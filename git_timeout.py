@@ -1,2 +1,0 @@
-class GitTimeout(Exception):
-    pass
