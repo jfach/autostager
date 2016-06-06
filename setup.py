@@ -7,7 +7,7 @@ setup(
   author = 'Jordan Facibene',
   author_email = 'jordan.facibene13@stjohns.edu',
   url = 'https://github.com/jfach/autostager',
-  download_url = 'https://github.com/jfach/autostager/tarball/0.1',
+  download_url = 'https://github.com/jfach/autostager/tarball/0.1.1',
   keywords = ['github', 'automation', 'staging'],
   classifiers = []
 )
