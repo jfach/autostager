@@ -9,6 +9,7 @@ setup(
   url = 'https://github.com/jfach/autostager',
   download_url = 'https://github.com/jfach/autostager/tarball/0.1.1',
   keywords = ['github', 'automation', 'staging'],
-  classifiers = []
+  classifiers = [],
+  install_requires = ['github3']
 )
 
