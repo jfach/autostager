@@ -97,7 +97,7 @@ class Autostager():
 
 
     def staging_dir(self, pr):
-        os.path.join(self.base_dir(), self.clone_dir(pr))
+        return os.path.join(self.base_dir(), self.clone_dir(pr))
 
 
     def repo_slug(self):
