@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'autostager',
   packages = ['autostager'],
-  version = '0.1.23',
+  version = '0.1.24',
   description = 'Stage a directory based on Github pull request (e.g., dynamic puppet environments)',
   author = 'Jordan Facibene',
   author_email = 'jordan.facibene13@stjohns.edu',
