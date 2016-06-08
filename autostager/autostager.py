@@ -11,10 +11,12 @@ class Autostager():
 
     def __init__(self):
         slug = self.repo_slug().split('/')
+        print "Initializing Autostager"
+        print "Repo Slug is ", slug
         self.owner = slug[0]
         self.repo = slug[1]
         #self.access_token = os.environ.get('access_token')
-
+    
     def access_token(self):
         return os.environ['access_token']
 
@@ -25,6 +27,7 @@ class Autostager():
 
     def stage_upstream(self):
         default_branch = self.client().repository(self.owner, self.repo).default_branch
+        print "Default Branch is ", default_branch
         logger.log("===> begin {0}".format(default_branch))
         p = pull_request.PullRequest(
             default_branch,
@@ -35,16 +38,14 @@ class Autostager():
         )
         if not p.staged():
             p.clone()
-        p.fetch()
+            p.fetch()
         if p.rebase():
             return
-        self.client.repository(self.owner, self.repo).create_issue(
+        self.client().repository(self.owner, self.repo).create_issue(
             "Failed to fast-forward {0} branch".format(default_branch),
             ":bangbang: This probably means somebody force-pushed to the branch."
         )
         pass
-
-
 
     def process_pull(self, pr):
         logger.log("===> {0} {1}".format(pr.number, self.staging_dir(pr)))
@@ -55,13 +56,21 @@ class Autostager():
             self.clone_dir(pr),
             self.authenticated_url(pr.as_dict()['base']['repo']['clone_url']))
         if p.staged():
+            print "staged"
             p.fetch()
-            if pr.head.sha != p.local_sha():
+            p.rebase()
+            local_sha = p.local_sha().decode('UTF-8').strip()[1:-1] # strip single quotes and extra space
+            print "local sha: " + p.local_sha()
+            print "pretty local sha: " + local_sha
+            print "head sha: " + pr.head.sha
+        
+            if pr.head.sha != local_sha:
+                print "head sha not equal to local sha"
                 p.reset_hard()
-                add_comment = true
+                add_comment = True
             else:
                 logger.log("nothing to do on {0} {1}".format(pr.number, self.staging_dir(pr)))
-                add_comment = false
+                add_comment = False
             self.comment_or_close(p, pr, add_comment)
         else:
             p.clone()
@@ -70,18 +79,20 @@ class Autostager():
     def comment_or_close(self, p, pr, add_comment = True):
         default_branch = pr.as_dict()['base']['repo']['default_branch']
         if p.up2date("upstream/{0}".format(default_branch)):
+            print pr.head.label + " is up to date"
             if add_comment:
-                comment = ":bell: Staged {0} at revision {1} on {2}"
-                comment = comment.format(self.clone_dir(pr), p.local_sha(), socket.gethostname())
+                local_sha = p.local_sha().strip()[1:-1]
+                comment = ":bell: Staged `{0}` at revision `{1}` on {2}"
+                comment = comment.format(self.clone_dir(pr), local_sha, socket.gethostname())
                 pr.create_comment(comment)
                 logger.log(comment)
-            else:
-                comment = ":boom: Unstaged since {0} is dangerously behind upstream"
-                comment = comment.format(self.clone_dir(pr))
-                shutil.rmtree(self.staging_dir(pr))
-                pr.create_comment(comment)
-                pr.close()
-                logger.log(comment) 
+        else:
+            comment = ":boom: Unstaged since {0} is dangerously behind upstream"
+            comment = comment.format(self.clone_dir(pr))
+            shutil.rmtree(self.staging_dir(pr))
+            pr.create_comment(comment)
+            pr.close()
+            logger.log(comment)
 
 
     def authenticated_url(self, url):
@@ -120,10 +131,12 @@ class Autostager():
         return ['.', '..', 'production']
 
     def run(self):
+        print "Running Autostager...\n"
         self.client()
         self.stage_upstream()
         prs = self.client().repository(self.owner, self.repo).pull_requests()
         new_clones = [self.clone_dir(pr) for pr in prs]
+        
         if os.path.exists(self.base_dir()):
             discard_dirs = set(os.listdir(self.base_dir())) - set(self.safe_dirs()) - set(new_clones)
             discard_dirs = list(discard_dirs)
@@ -131,7 +144,12 @@ class Autostager():
             for discard_dir in discard_dirs:
                 logger.log("===> Unstage {0} since PR is closed.".format(discard_dir))
                 shutil.rmtree(discard_dir) 
+    
         with timeout(self.timeout_seconds()):
             for pr in prs:
                 self.process_pull(pr)
         pass
+
+if __name__ == "__main__":
+    autostager = Autostager()
+    autostager.run()
