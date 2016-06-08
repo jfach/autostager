@@ -16,6 +16,9 @@ class PullRequest():
         self.base_dir = base_dir
         self.name = name
         self.upstream_url = upstream
+        print "DEBUG: "
+        print "base dir is " + base_dir
+        print "name is " + str(name)
         self.staging_dir = os.path.join(self.base_dir, self.name)
 
     def local_sha(self):
@@ -26,13 +29,14 @@ class PullRequest():
         return output
 
     def staged(self):
-        return os.path.isfile(self.staging_dir)
+        return os.path.isdir(self.staging_dir)
 
     def behind(self, treeish):
         os.chdir(self.staging_dir)
         args = ["git", "log", "--oneline", "..{0}".format(treeish)]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
+        print len(output.split('\n'))
         return len(output.split('\n'))
 
     # A threshold for how many commits a branch can be behind upstream.
@@ -41,6 +45,8 @@ class PullRequest():
         return 10
 
     def up2date(self, treeish):
+        if self.behind(treeish) <= self.behind_threshold():
+            print "less than"
         return self.behind(treeish) <= self.behind_threshold()
 
     def rebase(self): #???
@@ -110,11 +116,10 @@ class PullRequest():
         logger.log("clone to {0}".format(self.staging_dir))
         if not os.path.exists(self.base_dir):
             utils.mkdir_p(self.base_dir)
-        args = ["git", "clone", "-b", self.base_dir, self.clone_url, self.staging_dir, "&>", "/dev/null"]
+        args = ["git", "clone", "-b", self.branch, self.clone_url, self.staging_dir] #"&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
+        print output, err
         os.chdir(self.staging_dir)
         self.add_upstream_remote()
         self.update_submodules()
-        pass
-
