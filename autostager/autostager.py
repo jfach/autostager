@@ -26,6 +26,9 @@ class Autostager():
 
 
     def stage_upstream(self):
+        print "======================"
+        print "    STAGE UPSTREAM    "
+        print "======================"
         default_branch = self.client().repository(self.owner, self.repo).default_branch
         print "Default Branch is ", default_branch
         logger.log("===> begin {0}".format(default_branch))
@@ -39,7 +42,7 @@ class Autostager():
         if not p.staged():
             p.clone()
             p.fetch()
-        if p.rebase():
+        if p.rebase() == 0:
             return
         self.client().repository(self.owner, self.repo).create_issue(
             "Failed to fast-forward {0} branch".format(default_branch),
