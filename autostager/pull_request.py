@@ -76,7 +76,7 @@ class PullRequest():
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         #os.system("git rebase origin/{0}".format(self.branch))
         output, err = cmd.communicate()
-        #print args
+        print args
         status = cmd.returncode
         self.update_submodules()
         logger.log("{0} is at revision {1}".format(self.branch, self.local_sha()))
@@ -120,9 +120,11 @@ class PullRequest():
         print args
         print "Output: " + output
         print "Err: " + err
-        args = ["git", "submodule", "update", "--init", "&>", "/dev/null"]
+        args = ["git", "submodule", "update", "--init"] #"&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
+        print "Output 2: " + output
+        print "Err 2: " + err
         pass
         
     def remote(self, s): # what is s ???

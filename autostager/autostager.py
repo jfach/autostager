@@ -60,16 +60,17 @@ class Autostager():
             self.clone_dir(pr),
             self.authenticated_url(pr.as_dict()['base']['repo']['clone_url']))
         if p.staged():
+            print "======================"
+            print " ITS STAGED           "
+            print "======================"
             print "if p.staged(): from process_pull(self,pr)"
             print "staged"
             print "Calling p.fetch()..."
             p.fetch()
-            print "Calling p.rebase()..."
-            p.rebase()
             local_sha = p.local_sha().decode('UTF-8').strip()[1:-1] # strip single quotes and extra space
-            print "local sha: " + p.local_sha()
-            print "pretty local sha: " + local_sha
-            print "pr head sha: " + pr.head.sha
+            #print "local sha: " + p.local_sha()
+            #print "pretty local sha: " + local_sha
+            #print "pr head sha: " + pr.head.sha
         
             if pr.head.sha != local_sha:
                 print "head sha not equal to local sha"
@@ -77,8 +78,11 @@ class Autostager():
                 p.reset_hard()
                 add_comment = True
             else:
+                print "add comment is false for pr " + pr.head.label
                 logger.log("nothing to do on {0} {1}".format(pr.number, self.staging_dir(pr)))
                 add_comment = False
+            print "Calling p.rebase()..."
+            p.rebase()
             self.comment_or_close(p, pr, add_comment)
         else:
             p.clone()
@@ -86,6 +90,9 @@ class Autostager():
             self.comment_or_close(p, pr)
 
     def comment_or_close(self, p, pr, add_comment = True):
+        print "======================"
+        print "   COMMENT OR CLOSE   "
+        print "======================"
         default_branch = pr.as_dict()['base']['repo']['default_branch']
         if p.up2date("upstream/{0}".format(default_branch)):
             print pr.head.label + " is up to date"
