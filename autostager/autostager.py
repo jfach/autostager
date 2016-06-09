@@ -11,8 +11,6 @@ class Autostager():
 
     def __init__(self):
         slug = self.repo_slug().split('/')
-        print "Initializing Autostager"
-        print "Repo Slug is ", slug
         self.owner = slug[0]
         self.repo = slug[1]
         #self.access_token = os.environ.get('access_token')
@@ -27,7 +25,6 @@ class Autostager():
 
     def stage_upstream(self):
         default_branch = self.client().repository(self.owner, self.repo).default_branch
-        print "Default Branch is ", default_branch
         logger.log("===> begin {0}".format(default_branch))
         p = pull_request.PullRequest(
             default_branch,
@@ -52,7 +49,6 @@ class Autostager():
         print "======================"
         print "Proccessing {0}".format(pr.head.label)
         logger.log("===> {0} {1}".format(pr.number, self.staging_dir(pr)))
-        print "Creating new PR object..."
         p = pull_request.PullRequest(
             pr.head.ref,
             self.authenticated_url(pr.as_dict()['head']['repo']['clone_url']),
@@ -60,12 +56,7 @@ class Autostager():
             self.clone_dir(pr),
             self.authenticated_url(pr.as_dict()['base']['repo']['clone_url']))
         if p.staged():
-            print "======================"
-            print " ITS STAGED           "
-            print "======================"
-            print "if p.staged(): from process_pull(self,pr)"
-            print "staged"
-            print "Calling p.fetch()..."
+            print "Staged"
             p.fetch()
             local_sha = p.local_sha().decode('UTF-8').strip()[1:-1] # strip single quotes and extra space
             #print "local sha: " + p.local_sha()
@@ -73,12 +64,10 @@ class Autostager():
             #print "pr head sha: " + pr.head.sha
         
             if pr.head.sha != local_sha:
-                print "head sha not equal to local sha"
                 print "calling p.reset_hard()..."
                 p.reset_hard()
                 add_comment = True
             else:
-                print "add comment is false for pr " + pr.head.label
                 logger.log("nothing to do on {0} {1}".format(pr.number, self.staging_dir(pr)))
                 add_comment = False
             print "Calling p.rebase()..."
@@ -164,7 +153,6 @@ class Autostager():
         with timeout(self.timeout_seconds()):
             for pr in prs:
                 self.process_pull(pr)
-        pass
 
 if __name__ == "__main__":
     autostager = Autostager()
