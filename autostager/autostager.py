@@ -147,7 +147,7 @@ class Autostager():
 
 
     def safe_dirs(self):
-        return ['.', '..', 'production']
+        return ['.', '..', 'master']
 
     def run(self):
         print "Running Autostager...\n"
