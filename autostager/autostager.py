@@ -45,10 +45,14 @@ class Autostager():
             "Failed to fast-forward {0} branch".format(default_branch),
             ":bangbang: This probably means somebody force-pushed to the branch."
         )
-        pass
 
     def process_pull(self, pr):
+        print "======================"
+        print "     PROCESS PULL     "
+        print "======================"
+        print "Proccessing {0}".format(pr.head.label)
         logger.log("===> {0} {1}".format(pr.number, self.staging_dir(pr)))
+        print "Creating new PR object..."
         p = pull_request.PullRequest(
             pr.head.ref,
             self.authenticated_url(pr.as_dict()['head']['repo']['clone_url']),
@@ -56,16 +60,20 @@ class Autostager():
             self.clone_dir(pr),
             self.authenticated_url(pr.as_dict()['base']['repo']['clone_url']))
         if p.staged():
+            print "if p.staged(): from process_pull(self,pr)"
             print "staged"
+            print "Calling p.fetch()..."
             p.fetch()
+            print "Calling p.rebase()..."
             p.rebase()
             local_sha = p.local_sha().decode('UTF-8').strip()[1:-1] # strip single quotes and extra space
             print "local sha: " + p.local_sha()
             print "pretty local sha: " + local_sha
-            print "head sha: " + pr.head.sha
+            print "pr head sha: " + pr.head.sha
         
             if pr.head.sha != local_sha:
                 print "head sha not equal to local sha"
+                print "calling p.reset_hard()..."
                 p.reset_hard()
                 add_comment = True
             else:
@@ -74,6 +82,7 @@ class Autostager():
             self.comment_or_close(p, pr, add_comment)
         else:
             p.clone()
+            # check to see if its behind upstream (in the case of a reopened PR)
             self.comment_or_close(p, pr)
 
     def comment_or_close(self, p, pr, add_comment = True):

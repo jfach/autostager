@@ -16,26 +16,42 @@ class PullRequest():
         self.base_dir = base_dir
         self.name = name
         self.upstream_url = upstream
-        print "DEBUG: "
-        print "base dir is " + base_dir
-        print "name is " + str(name)
         self.staging_dir = os.path.join(self.base_dir, self.name)
+        print "==============================="
+        print "      PULL REQUEST INIT        "
+        print "==============================="
+        print "Branch: {0}".format(self.branch)
+        print "Clone URL: {0}".format(self.clone_url)
+        print "Base Dir: {0}".format(self.base_dir)
+        print "Name: {0}".format(self.name)
+        print "Upstream URL: {0}".format(self.upstream_url)
+        print "Staging Dir: {0}".format(self.staging_dir)
 
     def local_sha(self):
+        #print "======================"
+        #print "      LOCAL SHA       "
+        #print "======================"
         os.chdir(self.staging_dir)
         args = ["git", "log", "--pretty='%H'", "HEAD^1.."]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
+        #print "Output: {0}".format(output)
         return output
 
     def staged(self):
         return os.path.isdir(self.staging_dir)
 
     def behind(self, treeish):
+        print "====================="
+        print "       BEHIND        "
+        print "====================="
+        print "Treeish: " + treeish
         os.chdir(self.staging_dir)
         args = ["git", "log", "--oneline", "..{0}".format(treeish)]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
+        print "Output: " +  output
+        print "Err: " + err
         print len(output.split('\n'))
         return len(output.split('\n'))
 
@@ -45,42 +61,65 @@ class PullRequest():
         return 10
 
     def up2date(self, treeish):
-        if self.behind(treeish) <= self.behind_threshold():
-            print "less than"
         return self.behind(treeish) <= self.behind_threshold()
 
     def rebase(self): #???
+        print "================================"
+        print "           REBASE               "
+        print "================================"
+        print "PR branch is {0}".format(self.branch)
         logger.log("rebase origin/{0}".format(self.branch))
         os.chdir(self.staging_dir)
-        args = ["git", "rebase", "origin/{0}".format(self.branch), "&>", "/dev/null"]
+        print "CWD is " + os.getcwd() 
+        #args = ["git", "rebase", "origin/{0}".format(self.branch), "&>", "/dev/null"]
+        args = ["git", "rebase", "origin/{0}".format(self.branch)]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        #os.system("git rebase origin/{0}".format(self.branch))
         output, err = cmd.communicate()
+        #print args
         status = cmd.returncode
         self.update_submodules()
         logger.log("{0} is at revision {1}".format(self.branch, self.local_sha()))
+        #print "{0} is at revision {1}".format(self.branch, self.local_sha())
+        print "Return Code: " +  str(status)
+        print "Output: " + output
         return status
 
     def reset_hard(self):
+        print "===================="
+        print "    RESET HARD      "
+        print "===================="
         os.chdir(self.staging_dir)
         args = ["git", "reset", "--hard", "origin/{0}".format(self.branch), "&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        output, err = cmd.communicate()
+        poutput, err = cmd.communicate()
         self.update_submodules()
 
     def fetch(self):
+        print "===================="
+        print "       FETCH        "
+        print "===================="
+        print "PR: " + self.branch
         logger.log("git fetch")
         os.chdir(self.staging_dir)
         self.add_upstream_remote()
-        args = ["git", "fetch", "--all", "--prune", "&>", "/dev/null"]
+        args = ["git", "fetch", "--all", "--prune"] #"&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
-        pass
+        print "Output: " + output
 
     def update_submodules(self):
+        print "============================"
+        print "     UPDATE SUBMODULES      "
+        print "============================"
+        print "PR is: " + self.branch
         logger.log("update submodules in {0}".format(self.staging_dir))
-        args = ["git", "submodule", "sync", "&>", "/dev/null"]
+        args = ["git", "submodule", "sync"] # "&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
+        print args
+        print "Output: " + output
+        print "Err: " + err
         args = ["git", "submodule", "update", "--init", "&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
@@ -102,15 +141,20 @@ class PullRequest():
         return s in urls
 
     def add_upstream_remote(self):
+        print "=========================="
+        print "   ADD UPSTREAM REMOTE    "
+        print "=========================="
         os.chdir(self.staging_dir)
         logger.log("add upstream remote")
-        args = ["git", "remote", "add", "upstream", self.upstream_url, "&>", "/dev/null"]
+        args = ["git", "remote", "add", "upstream", self.upstream_url]# "&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
+        print "Output: " + output
+        print "Err: " + err
         args = ["git", "fetch", "--prune", "upstream", "&>" "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
-        pass
+        
 
     def clone(self):
         logger.log("clone to {0}".format(self.staging_dir))
