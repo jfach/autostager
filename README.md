@@ -5,6 +5,17 @@ Stage a directory based on Github pull request (e.g., dynamic puppet environment
 ###Install:
 `pip install autostager`
 
+###Setup:
+Export environment variables:  
+`access_token` *40 character Github access token*  
+`repo_slug` *repository that you want to track*  
+`base_dir` *directory to stage PRs in*  
+```
+>>> export access_token=<your 40-char token>
+>>> export repo_slug=jfach/autostager
+>>> export base_dir=/path/to/base/dir
+```
+
 ###Usage:
 ```python
 >>> from autostager import autostager
