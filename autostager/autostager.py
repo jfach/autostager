@@ -84,7 +84,7 @@ class Autostager():
         if p.up2date("upstream/{0}".format(default_branch)):
             print pr.head.label + " is up to date"
             if add_comment:
-                comment = ":bell: Staged `{0}` at revision `{1}` on {2}"
+                comment = ":bell: Staged `{0}` at revision {1} on {2}"
                 comment = comment.format(self.clone_dir(pr), p.local_sha(), socket.gethostname())
                 pr.create_comment(comment)
                 logger.log(comment)
