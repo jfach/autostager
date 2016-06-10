@@ -25,9 +25,9 @@ class Autostager():
 
 
     def stage_upstream(self):
-        print "======================"
-        print "    STAGE UPSTREAM    "
-        print "======================"
+        print "========================="
+        print "      STAGE UPSTREAM     "
+        print "========================="
         default_branch = self.client().repository(self.owner, self.repo).default_branch
         logger.log("===> begin {0}".format(default_branch))
         p = pull_request.PullRequest(
@@ -48,9 +48,9 @@ class Autostager():
         )
 
     def process_pull(self, pr):
-        print "======================"
-        print "     PROCESS PULL     "
-        print "======================"
+        print "========================="
+        print "       PROCESS PULL      "
+        print "========================="
         print "Proccessing {0}".format(pr.head.label)
         logger.log("===> {0} {1}".format(pr.number, self.staging_dir(pr)))
         p = pull_request.PullRequest(
@@ -77,9 +77,9 @@ class Autostager():
             self.comment_or_close(p, pr)
 
     def comment_or_close(self, p, pr, add_comment = True):
-        print "======================"
-        print "   COMMENT OR CLOSE   "
-        print "======================"
+        print "========================="
+        print "    COMMENT OR CLOSE     "
+        print "========================="
         default_branch = pr.as_dict()['base']['repo']['default_branch']
         if p.up2date("upstream/{0}".format(default_branch)):
             print pr.head.label + " is up to date"
