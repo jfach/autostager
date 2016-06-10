@@ -11,6 +11,9 @@ import utils
 class Autostager():
 
     def __init__(self):
+        print "========================="
+        print "     INIT AUTOSTAGER     "
+        print "========================="
         slug = self.repo_slug().split('/')
         self.owner = slug[0]
         self.repo = slug[1]
