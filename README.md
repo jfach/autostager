@@ -8,12 +8,12 @@
 Python port of [jumanjihouse's autostager](https://www.github.com/jumanjihouse/autostager)  
 Stage a directory based on Github pull request (e.g., dynamic puppet environments)
 
-###Install:
+##Install:
 Clone the repo: `git clone https://github.com/jfach/autostager.git`   
 **OR**  
 Install via pip: `pip install autostager`
 
-###Setup:
+##Setup:
 Export environment variables:  
 `access_token` *40 character Github access token*  
 `repo_slug` *repository that you want to track*  
@@ -29,7 +29,7 @@ Export environment variables:
 >>> export base_dir=/path/to/base/dir
 ```
 
-###Usage:
+##Usage:
 ```python
 >>> from autostager import autostager
 >>> autostager = autostager.Autostager() # creates a new autostager instance
