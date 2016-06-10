@@ -6,6 +6,7 @@ import github3
 import logger
 import pull_request
 from timeout import timeout
+import utils
 
 class Autostager():
 
@@ -59,7 +60,6 @@ class Autostager():
             self.clone_dir(pr),
             self.authenticated_url(pr.as_dict()['base']['repo']['clone_url']))
         if p.staged():
-            print "Staged"
             p.fetch()
             if pr.head.sha != p.local_sha():
                 print "calling p.reset_hard()..."
@@ -133,7 +133,7 @@ class Autostager():
         return ['.', '..', 'master']
 
     def run(self):
-        print "Running Autostager...\n"
+        print utils.art
         self.client()
         self.stage_upstream()
         prs = self.client().repository(self.owner, self.repo).pull_requests()
