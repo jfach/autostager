@@ -20,8 +20,8 @@ Export environment variables:
 `base_dir` *directory to stage PRs in*  
 `timeout` *timeout seconds for git operations, default is 120*
 
-- You can generate a token from the command line by running the following script: https://gist.github.com/Jfach/ec85c6550cf9fc99e3a708bd45ec6a8c  
-- Make sure to give the token the necessary access privileges.   
+- You can generate a token from the command line by running the following script, [token.py] (https://gist.github.com/Jfach/ec85c6550cf9fc99e3a708bd45ec6a8c "token.py")  
+- Make sure to give the token the necessary access privileges 
 - This can be done by going to Settings > Personal Access Tokens > Edit
 ```
 >>> export access_token=<your 40-char token>
