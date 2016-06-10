@@ -61,12 +61,7 @@ class Autostager():
         if p.staged():
             print "Staged"
             p.fetch()
-            local_sha = p.local_sha().decode('UTF-8').strip()[1:-1] # strip single quotes and extra space
-            #print "local sha: " + p.local_sha()
-            #print "pretty local sha: " + local_sha
-            #print "pr head sha: " + pr.head.sha
-        
-            if pr.head.sha != local_sha:
+            if pr.head.sha != p.local_sha():
                 print "calling p.reset_hard()..."
                 p.reset_hard()
                 add_comment = True
@@ -89,9 +84,8 @@ class Autostager():
         if p.up2date("upstream/{0}".format(default_branch)):
             print pr.head.label + " is up to date"
             if add_comment:
-                local_sha = p.local_sha().strip()[1:-1]
                 comment = ":bell: Staged `{0}` at revision `{1}` on {2}"
-                comment = comment.format(self.clone_dir(pr), local_sha, socket.gethostname())
+                comment = comment.format(self.clone_dir(pr), p.local_sha(), socket.gethostname())
                 pr.create_comment(comment)
                 logger.log(comment)
         else:
@@ -144,7 +138,6 @@ class Autostager():
         self.stage_upstream()
         prs = self.client().repository(self.owner, self.repo).pull_requests()
         new_clones = [self.clone_dir(pr) for pr in prs]
-        
         if os.path.exists(self.base_dir()):
             discard_dirs = set(os.listdir(self.base_dir())) - set(self.safe_dirs()) - set(new_clones)
             discard_dirs = list(discard_dirs)
@@ -152,7 +145,7 @@ class Autostager():
             for discard_dir in discard_dirs:
                 logger.log("===> Unstage {0} since PR is closed.".format(discard_dir))
                 shutil.rmtree(discard_dir) 
-    
+
         with timeout(self.timeout_seconds()):
             for pr in prs:
                 self.process_pull(pr)

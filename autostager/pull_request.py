@@ -35,8 +35,8 @@ class PullRequest():
         args = ["git", "log", "--pretty='%H'", "HEAD^1.."]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
-        #print "Output: {0}".format(output)
-        return output
+        local_sha = output.decode('UTF-8').strip()[1:-1]
+        return local_sha
 
     def staged(self):
         return os.path.isdir(self.staging_dir)
