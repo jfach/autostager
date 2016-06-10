@@ -50,8 +50,8 @@ class PullRequest():
         args = ["git", "log", "--oneline", "..{0}".format(treeish)]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
-        print "Output: " +  output
-        print "Err: " + err
+        #print "Output: " +  output
+        #print "Err: " + err
         return len(output.split('\n'))
 
     # A threshold for how many commits a branch can be behind upstream.
@@ -69,7 +69,6 @@ class PullRequest():
         print "PR branch is {0}".format(self.branch)
         logger.log("rebase origin/{0}".format(self.branch))
         os.chdir(self.staging_dir)
-        print "CWD is " + os.getcwd() 
         #args = ["git", "rebase", "origin/{0}".format(self.branch), "&>", "/dev/null"]
         args = ["git", "rebase", "origin/{0}".format(self.branch)]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -101,7 +100,7 @@ class PullRequest():
         args = ["git", "fetch", "--all", "--prune"] #"&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
-        print "Output: " + output
+        #print "Output: " + output
 
     def update_submodules(self):
         print "============================"
