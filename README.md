@@ -3,7 +3,9 @@ Python port of [jumanjihouse's autostager](https://www.github.com/jumanjihouse/a
 Stage a directory based on Github pull request (e.g., dynamic puppet environments)
 
 ###Install:
-`pip install autostager`
+Clone the repo: `git clone https://github.com/jfach/autostager.git`   
+**OR**  
+Install via pip: `pip install autostager`
 
 ###Setup:
 Export environment variables:  
