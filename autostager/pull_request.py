@@ -17,9 +17,9 @@ class PullRequest():
         self.name = name
         self.upstream_url = upstream
         self.staging_dir = os.path.join(self.base_dir, self.name)
-        print "==============================="
-        print "      PULL REQUEST INIT        "
-        print "==============================="
+        print "========================="
+        print "    INIT PULL REQUEST    "
+        print "========================="
         print "Branch: {0}".format(self.branch)
         print "Clone URL: {0}".format(self.clone_url)
         print "Base Dir: {0}".format(self.base_dir)
@@ -42,9 +42,9 @@ class PullRequest():
         return os.path.isdir(self.staging_dir)
 
     def behind(self, treeish):
-        print "====================="
-        print "       BEHIND        "
-        print "====================="
+        print "========================="
+        print "          BEHIND         "
+        print "=========================" 
         print "Treeish: " + treeish
         os.chdir(self.staging_dir)
         args = ["git", "log", "--oneline", "..{0}".format(treeish)]
@@ -63,9 +63,9 @@ class PullRequest():
         return self.behind(treeish) <= self.behind_threshold()
 
     def rebase(self): #???
-        print "================================"
-        print "           REBASE               "
-        print "================================"
+        print "========================="
+        print "         REBASE          "
+        print "=========================" 
         print "PR branch is {0}".format(self.branch)
         logger.log("rebase origin/{0}".format(self.branch))
         os.chdir(self.staging_dir)
@@ -80,9 +80,9 @@ class PullRequest():
         return status
 
     def reset_hard(self):
-        print "===================="
-        print "    RESET HARD      "
-        print "===================="
+        print "========================="
+        print "       RESET HARD        "
+        print "=========================" 
         os.chdir(self.staging_dir)
         args = ["git", "reset", "--hard", "origin/{0}".format(self.branch), "&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -90,9 +90,9 @@ class PullRequest():
         self.update_submodules()
 
     def fetch(self):
-        print "===================="
-        print "       FETCH        "
-        print "===================="
+        print "========================="
+        print "          FETCH          "
+        print "=========================" 
         print "PR: " + self.branch
         logger.log("git fetch")
         os.chdir(self.staging_dir)
@@ -103,9 +103,9 @@ class PullRequest():
         #print "Output: " + output
 
     def update_submodules(self):
-        print "============================"
-        print "     UPDATE SUBMODULES      "
-        print "============================"
+        print "========================="
+        print "    UPDATE SUBMODULES    "
+        print "=========================" 
         print "PR is: " + self.branch
         logger.log("update submodules in {0}".format(self.staging_dir))
         args = ["git", "submodule", "sync"] # "&>", "/dev/null"]
@@ -132,9 +132,9 @@ class PullRequest():
         return s in urls
 
     def add_upstream_remote(self):
-        print "=========================="
-        print "   ADD UPSTREAM REMOTE    "
-        print "=========================="
+        print "========================="
+        print "   ADD UPSTREAM REMOTE   "
+        print "=========================" 
         os.chdir(self.staging_dir)
         logger.log("add upstream remote")
         args = ["git", "remote", "add", "upstream", self.upstream_url]# "&>", "/dev/null"]
@@ -148,6 +148,9 @@ class PullRequest():
         
 
     def clone(self):
+        print "========================="
+        print "          CLONE          "
+        print "========================="
         logger.log("clone to {0}".format(self.staging_dir))
         if not os.path.exists(self.base_dir):
             utils.mkdir_p(self.base_dir)
