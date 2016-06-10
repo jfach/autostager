@@ -52,7 +52,6 @@ class PullRequest():
         output, err = cmd.communicate()
         print "Output: " +  output
         print "Err: " + err
-        print len(output.split('\n'))
         return len(output.split('\n'))
 
     # A threshold for how many commits a branch can be behind upstream.
@@ -74,14 +73,10 @@ class PullRequest():
         #args = ["git", "rebase", "origin/{0}".format(self.branch), "&>", "/dev/null"]
         args = ["git", "rebase", "origin/{0}".format(self.branch)]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        #os.system("git rebase origin/{0}".format(self.branch))
         output, err = cmd.communicate()
-        print args
         status = cmd.returncode
         self.update_submodules()
         logger.log("{0} is at revision {1}".format(self.branch, self.local_sha()))
-        #print "{0} is at revision {1}".format(self.branch, self.local_sha())
-        print "Return Code: " +  str(status)
         print "Output: " + output
         return status
 
@@ -117,14 +112,9 @@ class PullRequest():
         args = ["git", "submodule", "sync"] # "&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
-        print args
-        print "Output: " + output
-        print "Err: " + err
         args = ["git", "submodule", "update", "--init"] #"&>", "/dev/null"]
         cmd = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = cmd.communicate()
-        print "Output 2: " + output
-        print "Err 2: " + err
         pass
         
     def remote(self, s): # what is s ???
