@@ -72,7 +72,6 @@ what does autostager do : stges data from Pull request.
 $git checkout <master>
 $git push
 
->>>>>>> origin/production
 
 
 
