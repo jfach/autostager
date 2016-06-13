@@ -1,15 +1,10 @@
 Intro: 
 --------
-<<<<<<< HEAD
 
 Autostager contributes to projects by forking and cloning Pull Request. It performs an automatic staging operation on new or existing fork from Github's Pull Request. Instead of cloning the fork's data manually from Github, Autostager will draw fork's data from Github and stage in base directory at local machine. It also allows maintainer to test branch/es and  merge branch/es.  
-Imagine you are collobrating with 80 contributors to a project, Autostager stagesall forks and branches for the maintainer automaticly.    
-stages directory from PRs
-=======
-....`
-Autostager uses for automaticly staging new or existing fork from Github's Pull Request<br>
+Imagine you are collobrating with 80 contributors to a project, Autostager stagesall forks and branches for the maintainer automaticly stages directory from PRs
 
->>>>>>> origin/production
+Autostager uses for automaticly staging new or existing fork from Github's Pull Request<br>
 
 Purpose:
 --------
@@ -31,7 +26,7 @@ How:<br>
 Procedure:<br>
 ---------
 #####For Maintainer
-Follow procedure [ https://help.github.com/articles/creating-an-access-token-for-command-line-use/] to generate token forcommand line use
+Follow (procedure) [ https://help.github.com/articles/creating-an-access-token-for-command-line-use/] to generate token forcommand line use
 ```
 export access_token=<your_token>
 export repo_slug=<path of repo in github>
@@ -51,7 +46,6 @@ example:
 	upstream  https://github.com/jfach/testrepo.git (fetch) #maintainer	
 	upstream  https://github.com/jfach/testrepo.git (push)
 
-<<<<<<< HEAD
 ```
 Sync fork with Maintainer' Branch 
 ----------
@@ -59,10 +53,8 @@ Ensure github3 version is 0.9.3
 ```
 pip install --pre github3.py
 
-=======
 Sync fork with Maintainer' Branch 
 ----------
->>>>>>> origin/production
 ```
 $git fetch upstream
 $git checkout <master>
@@ -72,15 +64,13 @@ $git rebase <master>
 $git add <file>
 $git commit -m "..."
 $git push --force
-<<<<<<< HEAD
 $git fetch upstream
 
 
 what does autostager do : stges data from Pull request.
-
+```
 $git checkout <master>
 $git push
-=======
 
 >>>>>>> origin/production
 
