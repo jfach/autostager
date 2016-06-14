@@ -66,7 +66,7 @@ $git add <file>
 $git commit -m "..."
 $git push --force
 $git fetch upstream
-
+```
 
 what does autostager do : stges data from Pull request.
 ```
