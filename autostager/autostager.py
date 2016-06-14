@@ -73,7 +73,12 @@ class Autostager():
             self.comment_or_close(p, pr, add_comment)
         else:
             p.clone()
-            # check to see if its behind upstream (in the case of a reopened PR)
+            # check to see if its behind upstream (in the case of a reopened PR) TODO
+            # what happens when someone reopens a closed pull request:
+            # - the pr gets staged
+            # - on the next run, the pr is unstaged and closed due to still being x commits behind
+            # we want to close the pr after its opened again if it was originally closed for being x commits behind
+            # we need to do this in this block, i believe 
             self.comment_or_close(p, pr)
 
     def comment_or_close(self, p, pr, add_comment = True):
