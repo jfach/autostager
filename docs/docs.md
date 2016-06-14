@@ -54,6 +54,7 @@ Ensure github3 version is 0.9.3
 ```
 pip install --pre github3.py
 
+```
 Sync Fork with Maintainer's Master Branch
 --------
 ```
