@@ -54,17 +54,14 @@ Ensure github3 version is 0.9.3
 ```
 pip install --pre github3.py
 
-```
-Sync fork with Maintainer' Branch 
-----------
+Synce Fork with Maintainer's Master Branch
+--------
 ```
 $git fetch upstream
 $git checkout <master>
 $git rebase upstream/master
 $git checkout <branch>
 $git rebase <master>
-$git add <file>
-$git commit -m "..."
 $git push --force
 $git fetch upstream
 $git checkout <master>
