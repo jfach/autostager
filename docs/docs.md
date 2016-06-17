@@ -1,33 +1,29 @@
 Intro: 
 --------
 
-Autostager contributes to projects by forking and cloning Pull Request. It performs an automatic staging operation on new or existing fork from Github's Pull Request. Instead of cloning the fork's data manually from Github, Autostager will draw fork's data from Github and stage in base directory at local machine. It also allows maintainer to test branch/es and  merge branch/es.  
-Imagine you are collobrating with 80 contributors to a project, Autostager stagesall forks and branches for the maintainer automaticly stages directory from PRs
+Autostager contributes to projects by forking and cloning Pull Request from project's contributor. It performs an automatic staging operation on new or existing fork from Github's Pull Request.
+Instead of cloning the fork's data manually from Github, Autostager will draw fork's data from Github and stage in base directory at local machine. It also allows maintainer to test and merge branches.  
+Imagine you are collobrating with 80 contributors in a project, Autostager does the work for you.
 
-Autostager uses for automaticly staging new or existing fork from Github's Pull Request  
+However if contributor "A"  forked a repo but did not initiate any Pull Request, Autostager would not be able to stage any data from Contributor "A". 
 
 
-Purpose:
---------
-
-Autostager to pull all forks and from the fork branches from <repo> to local machine.  
-
-How:  
+How does Autostager works:  
 --------
 #####include function from autostager.py
 1. call out to github APl (Pull Request)
-2. for each pull request clone each fork and its branch   
+2. for each pull request, clone each fork and its branch   
 3. stage each fork and it's branch in to a directory  
 ⋅⋅ if the fork is already staged(exist)  
-⋅⋅ -> fetch and rebase the fork   
+⋅⋅ ->	 fetch and rebase the fork   
 ⋅⋅ else  
-⋅⋅ -> repeat step 2  
+⋅⋅ -> 	 repeat step 2  
 *Step3 acts as loop to look for new and existing fork<br> 
 
 Procedure:  
 ---------
 #####For Maintainer
-Follow (procedure) [ https://help.github.com/articles/creating-an-access-token-for-command-line-use/] to generate token forcommand line use
+Follow (procedure) [ https://help.github.com/articles/creating-an-access-token-for-command-line-use/] to generate token for CLI use Autostager
 ```
 export access_token=<your_token>
 export repo_slug=<path of repo in github>
