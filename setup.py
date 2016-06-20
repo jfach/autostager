@@ -7,7 +7,7 @@ setup(
   author = 'Jordan Facibene',
   author_email = 'jordan.facibene13@stjohns.edu',
   url = 'https://github.com/jfach/autostager',
-  download_url = 'https://github.com/jfach/autostager/tarball/0.1.3',
+  download_url = 'https://github.com/jfach/autostager/tarball/0.1.31',
   keywords = ['github', 'automation', 'staging'],
   classifiers = [],
   install_requires = ['github3.py']
