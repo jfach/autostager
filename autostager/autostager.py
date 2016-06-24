@@ -158,7 +158,7 @@ class Autostager():
 
 if __name__ == "__main__":
     if os.environ.get('refresh_time'):
-    	refresh_time = os.environ['refresh_time']
+    	refresh_time = int(os.environ['refresh_time'])
     else:
     	refresh_time = 30
     autostager = Autostager()
