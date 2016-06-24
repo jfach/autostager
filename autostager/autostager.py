@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 import socket
+import time
 import github3
 import logger
 import pull_request
@@ -156,5 +157,11 @@ class Autostager():
                 self.process_pull(pr)
 
 if __name__ == "__main__":
+    if os.environ.get('refresh_time'):
+    	refresh_time = os.environ['refresh_time']
+    else:
+    	refresh_time = 30
     autostager = Autostager()
-    autostager.run()
+    while True:
+    	autostager.run()
+	time.sleep(refresh_time)
